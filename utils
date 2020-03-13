@@ -68,3 +68,19 @@ def Animation(Z_in , nb_iter):
     plt.grid(True)
     anim = animation.FuncAnimation(fig , animate , init_func=None , frames=nb_iter , fargs=Z_in , interval=2000 , repeat=False)
     return(anim)
+	
+	
+# q 12 
+def alea_m(p , t ):
+    """matrice aléatoire de 0 et 1 d'espérance p.
+     Arguments:
+        p -- paramétre de Bernoulli float entre 0 et 1
+        t -- taille de la matrice 
+        
+    """
+    
+    A = np.random.binomial(size=(t-2)*(t-2), n=1, p=p).reshape(t-2, t-2)
+    M = np.zeros((t, t))
+    M[1:-1, 1:-1] = A 
+   
+    return(M)
