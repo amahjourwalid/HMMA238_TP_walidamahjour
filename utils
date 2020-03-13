@@ -1,0 +1,70 @@
+## fichier util contenant le fonctions utils pour le TP le jeu de la vie 
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import animation
+from matplotlib import animation , rc 
+from IPython.display import HTML
+
+
+def affichage_9(Z):
+    """
+    Arguments : Z - liste de listes
+    Returns   : Image (10 figures )
+    
+    """
+    plt.subplots(figsize=(25,15)) # céer plusieurs plots de taille 25x15 
+    for i in range(10):
+        axs = plt.subplot(2,5,i+1)# creation de chaque subplot en 2 lignes et 5 colonnes 
+        plt.imshow(Z,cmap="binary", extent=[0,len(Z[0]),0,len(Z)],) # on utilise plt.imshow pour délimiter le cadre suivant les coordonnées(extent=..) que l'image remplira 
+        plt.grid(True) # ajouter des grilles 
+        axs.set_xticks(range(0,len(Z[0]),1,))
+        plt.title('Itération ' + str(i)) # ajouter le titre de chaque itertion 
+               
+        Z = iteration_jeu(Z) 
+
+    plt.show() # afficher toutes les figures 
+	
+
+# q 8
+Z=np.asarray(Z)
+def calcul_nb_voisins_np(Z):
+    
+    N= np.zeros(np.shape(Z))
+    N[1:-1, 1:-1] = Z[0:-2, 0:-2] + Z[:-2, 2:] + Z[2:, :-2] + Z[:-2, 1:-1] + \
+        Z[1:-1, 2:] + Z[1:-1, :-2] + Z[2:, 1:-1] + Z[2:, 2:]
+    return(N)   
+
+	
+# q 9
+def iteration_jeu_np(Z):
+   
+    Z = np.array(Z)
+    a= Z
+    N = calcul_nb_voisins_np(Z)
+    etou = np.where((a == 1) & ((N == 1) | (N > 3)))
+    Z[etou] = 0
+    nn= np.where((a == 0) & (N == 3))
+    Z[nn] = 1
+    return Z
+	
+# q 10
+def jeu_np(Z_in, nb_iter):
+    while nb_iter != 0:
+            Z_in=iteration_jeu_np(Z_in)
+            nb_iter=nb_iter-1
+    return (Z_in)
+	
+	
+## q 11 
+def Animation(Z_in , nb_iter):
+    global fig 
+    fig = plt.figure()
+        
+    im = plt.imshow(Z_in , cmap='binary')
+    def animate(frames , *fargs):
+        fargs=jeu_np(fargs , frames)
+        im.set_data(fargs)
+        return im
+    plt.grid(True)
+    anim = animation.FuncAnimation(fig , animate , init_func=None , frames=nb_iter , fargs=Z_in , interval=2000 , repeat=False)
+    return(anim)
